@@ -30,6 +30,7 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(methodOverride('_method'))
+app.use(express.static('public'))
 
 app.get('/', checkAuthenticated, (req, res) => {
   res.render('index.ejs')
@@ -65,8 +66,9 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
 })
 
 app.delete('/logout', (req, res) => {
-  req.logOut()
-  res.redirect('/login')
+  req.logOut((err) => {
+    if (!err) res.redirect('/login')
+  })
 })
 
 function checkAuthenticated(req, res, next) {
